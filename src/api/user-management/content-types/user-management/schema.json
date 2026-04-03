@@ -1,0 +1,13 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_management",
+  "info": {
+    "singularName": "user-management",
+    "pluralName": "user-managements",
+    "displayName": "User Management"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {}
+}

@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "notices",
+  "info": {
+    "singularName": "notice",
+    "pluralName": "notices",
+    "displayName": "Notice"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    },
+    "publishDate": {
+      "type": "date",
+      "required": true
+    },
+    "expiryDate": {
+      "type": "date"
+    },
+    "isPublic": {
+      "type": "boolean",
+      "default": false
+    },
+    "targetRoles": {
+      "type": "json"
+    },
+    "targetBatches": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::batch.batch"
+    },
+    "attachments": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "files",
+        "images",
+        "videos"
+      ]
+    }
+  }
+}

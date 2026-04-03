@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "placement_partners",
+  "info": {
+    "singularName": "placement-partner",
+    "pluralName": "placement-partners",
+    "displayName": "Placement Partner",
+    "description": "Companies and consultancies for placement partnerships"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "companyName": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "website": {
+      "type": "string"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "displayOrder": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

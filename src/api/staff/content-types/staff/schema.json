@@ -1,0 +1,103 @@
+{
+  "kind": "collectionType",
+  "collectionName": "staff_profiles",
+  "info": {
+    "singularName": "staff",
+    "pluralName": "staffs",
+    "displayName": "Staff",
+    "description": "Comprehensive institutional staff management module"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "firstName": {
+      "type": "string",
+      "required": true
+    },
+    "lastName": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "altPhone": {
+      "type": "string"
+    },
+    "dob": {
+      "type": "date"
+    },
+    "gender": {
+      "type": "enumeration",
+      "enum": [
+        "male",
+        "female",
+        "other"
+      ]
+    },
+    "address": {
+      "type": "text"
+    },
+    "department": {
+      "type": "string"
+    },
+    "jobTitle": {
+      "type": "string"
+    },
+    "joiningDate": {
+      "type": "date"
+    },
+    "experience": {
+      "type": "string"
+    },
+    "workLocation": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::branch.branch",
+      "inversedBy": "staffs"
+    },
+    "aadharNumber": {
+      "type": "string"
+    },
+    "panNumber": {
+      "type": "string"
+    },
+    "salaryBase": {
+      "type": "decimal"
+    },
+    "bankName": {
+      "type": "string"
+    },
+    "accountNumber": {
+      "type": "string"
+    },
+    "ifscCode": {
+      "type": "string"
+    },
+    "profileImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "role": {
+      "type": "enumeration",
+      "enum": ["teacher", "accountant"],
+      "required": true,
+      "default": "teacher"
+    }
+  }
+}

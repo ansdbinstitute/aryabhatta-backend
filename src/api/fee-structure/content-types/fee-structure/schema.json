@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "fee_structures",
+  "info": {
+    "singularName": "fee-structure",
+    "pluralName": "fee-structures",
+    "displayName": "Fee Structure"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "amount": {
+      "type": "decimal",
+      "required": true
+    },
+    "dueDate": {
+      "type": "date"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "admission",
+        "tuition",
+        "exam",
+        "other"
+      ],
+      "default": "tuition"
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course"
+    },
+    "batch": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::batch.batch"
+    }
+  }
+}

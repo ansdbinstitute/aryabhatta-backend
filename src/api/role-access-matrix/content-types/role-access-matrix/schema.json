@@ -1,0 +1,30 @@
+{
+  "kind": "singleType",
+  "collectionName": "role_access_matrices",
+  "info": {
+    "singularName": "role-access-matrix",
+    "pluralName": "role-access-matrices",
+    "displayName": "Role Access Matrix"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "institute_admin": {
+      "type": "json"
+    },
+    "branch_admin": {
+      "type": "json"
+    },
+    "teacher": {
+      "type": "json"
+    },
+    "accountant": {
+      "type": "json"
+    },
+    "student": {
+      "type": "json"
+    }
+  }
+}

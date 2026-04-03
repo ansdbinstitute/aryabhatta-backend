@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "permission_matrices",
+  "info": {
+    "singularName": "permission-matrix",
+    "pluralName": "permission-matrices",
+    "displayName": "Permission Matrix"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    },
+    "allowedContentTypes": {
+      "type": "json",
+      "required": true
+    },
+    "allowedActions": {
+      "type": "json",
+      "required": true
+    },
+    "assignedBy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "notes": {
+      "type": "text"
+    }
+  }
+}

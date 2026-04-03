@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "exams",
+  "info": {
+    "singularName": "exam",
+    "pluralName": "exams",
+    "displayName": "Exam"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "examDate": {
+      "type": "date",
+      "required": true
+    },
+    "maxMarks": {
+      "type": "integer",
+      "required": true
+    },
+    "passingMarks": {
+      "type": "integer",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "theory",
+        "practical",
+        "internal",
+        "final"
+      ]
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course"
+    },
+    "batch": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::batch.batch"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "upcoming",
+        "conducted",
+        "cancelled",
+        "postponed"
+      ],
+      "default": "upcoming"
+    }
+  }
+}
