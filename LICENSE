@@ -1,0 +1,238 @@
+# License Badges
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
+[![License: View Only](https://img.shields.io/badge/View%20Only-Yes-blue.svg)](LICENSE)
+[![License: No Modification](https://img.shields.io/badge/Modification-Not%20Allowed-orange.svg)](LICENSE)
+
+---
+
+```
++------------------------------------------------------------------------------+
+|                                                                              |
+|                         PROPRIETARY SOFTWARE LICENSE                          |
+|                             License Version 1.0                               |
+|                                                                              |
++------------------------------------------------------------------------------+
+```
+
+## License Summary
+
+| Attribute | Value |
+|----------|-------|
+| **License Type** | Proprietary - View Only, No Modification |
+| **Copyright Holder** | Alexander Hitrov |
+| **Licensed To** | Pinaki Chakraborty |
+| **Organization** | ANSDB, Jibankushal Foundation |
+| **Restrictions** | No Modification - No Redistribution - No Commercial Use |
+| **Year** | 2021 |
+
+---
+
+## Copyright Holder
+
+**Copyright Holder:** Alexander Hitrov
+
+All Rights Reserved.
+
+---
+
+## Licensor
+
+Alexander Hitrov
+
+---
+
+## Licensee & Recipient
+
+**Recipient:** Pinaki Chakraborty
+
+---
+
+## Intended Organization
+
+**Organization:** Aryabhatta National Skill Development Board (ANSDB)
+- A unit of Jibankushal Foundation
+- Registered under Section 8, Ministry of Corporate Affairs, India
+
+---
+
+## Permitted Use
+
+The following uses are permitted under this license:
+
+- Viewing the source code for educational purposes
+- Using the software within ANSDB educational programs
+- Understanding the codebase architecture
+- Creating backups for archival purposes
+
+---
+
+## Prohibited Uses
+
+The following uses are strictly prohibited:
+
+- **MODIFICATIONS in any form are strictly prohibited**
+- Redistribution in any form (sharing, publishing, selling, or providing access)
+- Commercial use or exploitation
+- Claiming this code as your own work
+- Creating forks, derivative works, or modifications
+- Using for any institution other than ANSDB without written consent
+- Removing, altering, or obscuring copyright notices
+
+---
+
+## Full License Agreement
+
+### Article 1: Grant of License
+
+Alexander Hitrov ("Licensor") hereby grants to Pinaki Chakraborty ("Licensee") a non-exclusive, non-transferable, revocable license to VIEW and USE this software exclusively for educational purposes as described herein.
+
+### Article 2: Definitions
+
+- **"Software"** refers to all source code, documentation, and associated materials.
+- **"View"** means to read, examine, and study the source code for understanding purposes.
+- **"Modification"** means any alteration, enhancement, customization, or derivative work.
+- **"Educational Purposes"** means teaching, learning, research, and non-commercial activities within ANSDB.
+
+### Article 3: Permitted Activities
+
+The Licensee may:
+1. View and study the source code for educational purposes
+2. Use the Software within ANSDB's educational programs
+3. Create backups for archival purposes
+
+### Article 4: Prohibited Activities
+
+The Licensee shall NOT:
+1. **MODIFY the Software in any way** - This is strictly prohibited
+2. Redistribute, share, or transfer the Software to any third party
+3. Use the Software for any commercial purposes
+4. Claim ownership or authorship of the Software
+5. Create derivative works, forks, or modifications
+6. Use the Software for any institution other than ANSDB
+7. Remove, alter, or obscure any copyright notices
+
+### Article 5: Source Code Provided As-Built
+
+```
++------------------------------------------------------------------------------+
+|                                                                              |
+|   THIS SOFTWARE IS PROVIDED AS-IS, IN ITS ORIGINAL FORM AS BUILT          |
+|   BY ALEXANDER HITROV.                                                    |
+|                                                                              |
+|   NO MODIFICATIONS, ALTERATIONS, OR CUSTOMIZATIONS ARE PERMITTED.        |
+|                                                                              |
++------------------------------------------------------------------------------+
+```
+
+### Article 6: Intellectual Property
+
+This Software remains the exclusive intellectual property of Alexander Hitrov. All copyright, patent, trademark, and other intellectual property rights are retained by the Licensor.
+
+### Article 7: Disclaimer of Warranties
+
+```
++------------------------------------------------------------------------------+
+|                                                                              |
+|   THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS    |
+|   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, |
+|   FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.                    |
+|                                                                              |
++------------------------------------------------------------------------------+
+```
+
+### Article 8: Limitation of Liability
+
+In no event shall Alexander Hitrov be liable for any direct, indirect, incidental, special, exemplary, or consequential damages arising from this license or use of the Software.
+
+### Article 9: Termination
+
+This license terminates automatically upon:
+1. Modification of the Software in any way
+2. Violation of any term or condition of this agreement
+3. Failure to preserve copyright notices
+4. Engagement in any prohibited activity
+
+Upon termination, the Licensee must cease all use and destroy all copies.
+
+### Article 10: Offer to Pinaki Chakraborty
+
+This license is specifically offered to Pinaki Chakraborty for:
+- Personal educational study
+- Implementation within ANSDB
+- Non-commercial purposes within Jibankushal Foundation
+
+This offer cannot be transferred, sublicensed, or extended to any third party without explicit written consent from Alexander Hitrov.
+
+### Article 11: Governing Law
+
+Governed by applicable laws. Jurisdiction: Appropriate courts.
+
+---
+
+## Compliance Checklist
+
+| Activity | Status |
+|----------|--------|
+| View source code | Permitted |
+| Educational research | Permitted |
+| Use within ANSDB | Permitted |
+| Modify source code | **Prohibited** |
+| Create derivative works | Prohibited |
+| Share with other institutions | Prohibited |
+| Commercial deployment | Prohibited |
+| Open source release | Prohibited |
+| Create forks | Prohibited |
+| Resell or redistribute | Prohibited |
+
+---
+
+## Important Notices
+
+```
++------------------------------------------------------------------------------+
+|                                                                              |
+|   THIS IS A VIEW-ONLY LICENSE                                              |
+|                                                                              |
+|   The Licensee may VIEW the source code but is STRICTLY PROHIBITED         |
+|   from making ANY MODIFICATIONS to the Software.                           |
+|                                                                              |
++------------------------------------------------------------------------------+
+```
+
+```
++------------------------------------------------------------------------------+
+|                                                                              |
+|   BY DOWNLOADING, INSTALLING, COPYING, OR OTHERWISE USING THIS SOFTWARE,  |
+|   YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTAND, AND AGREE TO BE BOUND  |
+|   BY ALL TERMS AND CONDITIONS OF THIS PROPRIETARY LICENSE AGREEMENT.        |
+|                                                                              |
+|   IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS SOFTWARE.         |
+|                                                                              |
++------------------------------------------------------------------------------+
+```
+
+---
+
+## Licensee Acceptance
+
+This is a legally binding agreement. By using this Software, the Licensee accepts all terms and conditions stated herein.
+
+---
+
+```
++------------------------------------------------------------------------------+
+|                                                                              |
+|                          (c) 2021 ALEXANDER HITROV                        |
+|                              ALL RIGHTS RESERVED                            |
+|                                                                              |
+|              Licensed to Pinaki Chakraborty for use within ANSDB              |
+|                                                                              |
++------------------------------------------------------------------------------+
+```
+
+---
+
+**License Version:** 1.0
+**Effective Date:** 2021
+**License ID:** ANSDB-BE-2021-001
+**Type:** Custom Proprietary License - View Only, No Modification
