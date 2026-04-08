@@ -128,3 +128,11 @@ build
 .strapi-updater.json
 .strapi-cloud.json
 .cache/
+
+############################
+# Custom
+############################
+
+nul
+INTEGRATION_AUDIT_REPORT.md
+public/uploads/

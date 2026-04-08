@@ -285,7 +285,19 @@ async function grantPermissions(strapi: any) {
       'api::material.material.findOne',
       'api::material.material.create',
       'api::material.material.update',
-      'api::material.material.delete'
+      'api::material.material.delete',
+
+      // Placements & Testimonials
+      'api::placement-partner.placement-partner.find',
+      'api::placement-partner.placement-partner.findOne',
+      'api::placement-partner.placement-partner.create',
+      'api::placement-partner.placement-partner.update',
+      'api::placement-partner.placement-partner.delete',
+      'api::student-testimonial.student-testimonial.find',
+      'api::student-testimonial.student-testimonial.findOne',
+      'api::student-testimonial.student-testimonial.create',
+      'api::student-testimonial.student-testimonial.update',
+      'api::student-testimonial.student-testimonial.delete'
     ];
 
     for (const role of roles) {
