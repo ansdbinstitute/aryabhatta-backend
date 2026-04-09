@@ -27,7 +27,7 @@ export default {
 
     const roleType = fullUser.roleType;
 
-    if (roleType === 'institute_admin' || roleType === 'branch_admin') {
+    if (roleType === 'institute_admin') {
       return ctx.send({ data: AVAILABLE_CONTENT_TYPES });
     }
 
@@ -50,26 +50,13 @@ export default {
 
     const roleType = fullUser.roleType;
 
-    if (roleType === 'institute_admin') {
-      const targetUser: any = await strapi.entityService.findOne('plugin::users-permissions.user', id);
-      if (!targetUser) {
-        return ctx.notFound('User not found');
-      }
-    } else if (roleType === 'branch_admin') {
-      const targetUser: any = await strapi.entityService.findOne('plugin::users-permissions.user', id, {
-        populate: ['branch']
-      });
-      if (!targetUser) {
-        return ctx.notFound('User not found');
-      }
-      if (targetUser.roleType === 'institute_admin') {
-        return ctx.forbidden('Access denied');
-      }
-      if (targetUser.branch?.id !== fullUser.branch?.id) {
-        return ctx.forbidden('You can only view permissions for users in your branch');
-      }
-    } else {
-      return ctx.forbidden('Only Institute Admin and Branch Admin can view permissions');
+    if (roleType !== 'institute_admin') {
+      return ctx.forbidden('Only Institute Admin can view permissions');
+    }
+
+    const targetUser: any = await strapi.entityService.findOne('plugin::users-permissions.user', id);
+    if (!targetUser) {
+      return ctx.notFound('User not found');
     }
 
     const permissions = await strapi.entityService.findMany('api::permission-matrix.permission-matrix', {
@@ -105,15 +92,8 @@ export default {
       return ctx.forbidden('Cannot set permissions for Institute Admin. Contact ERP Admin.');
     }
 
-    if (roleType === 'branch_admin') {
-      if (targetUser.roleType === 'institute_admin') {
-        return ctx.forbidden('Access denied');
-      }
-      if (targetUser.branch?.id !== fullUser.branch?.id) {
-        return ctx.forbidden('You can only set permissions for users in your branch');
-      }
-    } else if (roleType !== 'institute_admin') {
-      return ctx.forbidden('Only Institute Admin and Branch Admin can set permissions');
+    if (roleType !== 'institute_admin') {
+      return ctx.forbidden('Only Institute Admin can set permissions');
     }
 
     const { contentType, actions } = ctx.request.body;
@@ -163,8 +143,8 @@ export default {
 
     const roleType = fullUser.roleType;
 
-    if (roleType !== 'institute_admin' && roleType !== 'branch_admin') {
-      return ctx.forbidden('Only Institute Admin and Branch Admin can remove permissions');
+    if (roleType !== 'institute_admin') {
+      return ctx.forbidden('Only Institute Admin can remove permissions');
     }
 
     await strapi.entityService.delete('api::permission-matrix.permission-matrix', permissionId);

@@ -19,6 +19,8 @@ export default factories.createCoreController('api::payment.payment', ({ strapi 
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::payment.payment', 'find');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view payments.');
       const branchId = fullUser.branch?.id;
       if (!branchId) {
         return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
@@ -83,6 +85,8 @@ export default factories.createCoreController('api::payment.payment', ({ strapi 
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::payment.payment', 'findOne');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view this payment.');
       const branchId = fullUser.branch?.id;
       const payment: any = await strapi.entityService.findOne('api::payment.payment', id, {
         populate: ['branch']
@@ -141,6 +145,8 @@ export default factories.createCoreController('api::payment.payment', ({ strapi 
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::payment.payment', 'create');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to create payments.');
       const branchId = fullUser.branch?.id;
       if (branchId) {
         ctx.request.body.data.branch = branchId;
@@ -176,6 +182,8 @@ export default factories.createCoreController('api::payment.payment', ({ strapi 
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::payment.payment', 'update');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to update payments.');
       const branchId = fullUser.branch?.id;
       const payment: any = await strapi.entityService.findOne('api::payment.payment', id, {
         populate: ['branch']
@@ -216,6 +224,8 @@ export default factories.createCoreController('api::payment.payment', ({ strapi 
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::payment.payment', 'delete');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to delete payments.');
       const branchId = fullUser.branch?.id;
       const payment: any = await strapi.entityService.findOne('api::payment.payment', id, {
         populate: ['branch']

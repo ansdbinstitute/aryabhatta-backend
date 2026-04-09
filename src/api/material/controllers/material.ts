@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi';
-import { canAccessAllBranches, getUserWithBranch } from '../../../utils/branch-access';
+import { canAccessAllBranches, canViewAllBranchData, getUserWithBranch } from '../../../utils/branch-access';
+import { checkUserPermission } from '../../../utils/permission-checker';
 
 export default factories.createCoreController('api::material.material', ({ strapi }) => ({
   async find(ctx) {
@@ -7,8 +8,8 @@ export default factories.createCoreController('api::material.material', ({ strap
 
     if (!user) return await super.find(ctx);
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
+    const hasAccessToAllData = await canViewAllBranchData(user.id);
+    if (hasAccessToAllData) {
       return await super.find(ctx);
     }
 
@@ -18,6 +19,8 @@ export default factories.createCoreController('api::material.material', ({ strap
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::material.material', 'find');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view materials.');
       const branchId = fullUser.branch?.id;
       if (!branchId) {
         return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
@@ -36,6 +39,8 @@ export default factories.createCoreController('api::material.material', ({ strap
     }
 
     if (roleType === 'teacher') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::material.material', 'find');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view materials.');
       const teacherBatches = await strapi.entityService.findMany('api::batch.batch', {
         filters: { teacher: user.id }
       });
@@ -84,8 +89,8 @@ export default factories.createCoreController('api::material.material', ({ strap
 
     if (!user) return await super.findOne(ctx);
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
+    const hasAccessToAllData = await canViewAllBranchData(user.id);
+    if (hasAccessToAllData) {
       return await super.findOne(ctx);
     }
 
@@ -95,6 +100,8 @@ export default factories.createCoreController('api::material.material', ({ strap
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::material.material', 'findOne');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view this material.');
       const branchId = fullUser.branch?.id;
       const material: any = await strapi.entityService.findOne('api::material.material', id, {
         populate: {
@@ -135,6 +142,8 @@ export default factories.createCoreController('api::material.material', ({ strap
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin' || roleType === 'teacher') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::material.material', 'create');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to create materials.');
       return await super.create(ctx);
     }
 
@@ -158,6 +167,8 @@ export default factories.createCoreController('api::material.material', ({ strap
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::material.material', 'update');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to update materials.');
       const branchId = fullUser.branch?.id;
       const material: any = await strapi.entityService.findOne('api::material.material', id, {
         populate: {
@@ -180,6 +191,8 @@ export default factories.createCoreController('api::material.material', ({ strap
     }
 
     if (roleType === 'teacher') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::material.material', 'update');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to update materials.');
       return await super.update(ctx);
     }
 
@@ -203,6 +216,8 @@ export default factories.createCoreController('api::material.material', ({ strap
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::material.material', 'delete');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to delete materials.');
       const branchId = fullUser.branch?.id;
       const material: any = await strapi.entityService.findOne('api::material.material', id, {
         populate: {

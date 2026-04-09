@@ -117,9 +117,9 @@ coverage
 # Strapi
 ############################
 
-.env
-.env.local
-.env.*.local
+# Include .env in git for deployment
+# .env.local
+# .env.*.local
 license.txt
 exports
 .strapi

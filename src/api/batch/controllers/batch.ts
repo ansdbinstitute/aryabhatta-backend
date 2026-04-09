@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi';
-import { canAccessAllBranches, getUserWithBranch } from '../../../utils/branch-access';
+import { canAccessAllBranches, canViewAllBranchData, getUserWithBranch } from '../../../utils/branch-access';
+import { checkUserPermission } from '../../../utils/permission-checker';
 
 export default factories.createCoreController('api::batch.batch', ({ strapi }) => ({
   async find(ctx) {
@@ -7,8 +8,8 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
 
     if (!user) return await super.find(ctx);
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
+    const hasAccessToAllData = await canViewAllBranchData(user.id);
+    if (hasAccessToAllData) {
       return await super.find(ctx);
     }
 
@@ -18,6 +19,8 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::batch.batch', 'find');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view batches.');
       const branchId = fullUser.branch?.id;
       if (!branchId) {
         return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
@@ -34,6 +37,8 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
     }
 
     if (roleType === 'teacher') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::batch.batch', 'find');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view batches.');
       const teacherBatches = await strapi.entityService.findMany('api::batch.batch', {
         filters: { teacher: user.id }
       });
@@ -79,8 +84,8 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
 
     if (!user) return await super.findOne(ctx);
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
+    const hasAccessToAllData = await canViewAllBranchData(user.id);
+    if (hasAccessToAllData) {
       return await super.findOne(ctx);
     }
 
@@ -90,6 +95,8 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::batch.batch', 'findOne');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view this batch.');
       const branchId = fullUser.branch?.id;
       const batch: any = await strapi.entityService.findOne('api::batch.batch', id, {
         populate: {
@@ -128,6 +135,8 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::batch.batch', 'create');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to create batches.');
       return await super.create(ctx);
     }
 
@@ -151,6 +160,8 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::batch.batch', 'update');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to update batches.');
       const branchId = fullUser.branch?.id;
       const batch: any = await strapi.entityService.findOne('api::batch.batch', id, {
         populate: {
@@ -190,6 +201,8 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::batch.batch', 'delete');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to delete batches.');
       const branchId = fullUser.branch?.id;
       const batch: any = await strapi.entityService.findOne('api::batch.batch', id, {
         populate: {

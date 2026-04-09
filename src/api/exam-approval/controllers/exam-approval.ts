@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi';
-import { canAccessAllBranches, getUserWithBranch } from '../../../utils/branch-access';
+import { canViewAllBranchData, getUserWithBranch } from '../../../utils/branch-access';
+import { checkUserPermission } from '../../../utils/permission-checker';
 
 export default factories.createCoreController('api::exam-approval.exam-approval' as any, ({ strapi }) => ({
   async find(ctx) {
@@ -14,14 +15,36 @@ export default factories.createCoreController('api::exam-approval.exam-approval'
     const { user } = ctx.state;
     let { data } = ctx.request.body;
 
+    if (!user) {
+      return ctx.unauthorized('You must be logged in');
+    }
+
+    const fullUser = await getUserWithBranch(user.id);
+    if (!fullUser) {
+      return ctx.unauthorized('User not found');
+    }
+
+    if (fullUser.roleType !== 'student') {
+      return ctx.forbidden('Only students can create exam approval requests.');
+    }
+
+    const studentRecord = await strapi.db.query('api::student.student').findOne({
+      where: { user: user.id },
+      populate: ['course', 'batch']
+    });
+
+    if (!studentRecord) {
+      return ctx.notFound('Student record not found.');
+    }
+
     if (data?.student && typeof data.student === 'string') {
-      const studentRecord = await strapi.db.query('api::student.student').findOne({
+      const matchedStudentRecord = await strapi.db.query('api::student.student').findOne({
         where: { documentId: data.student }
       });
       
-      if (studentRecord) {
-        data.student = studentRecord.id;
-        strapi.log.debug(`[create exam-approval] Converted student documentId to id ${studentRecord.id}`);
+      if (matchedStudentRecord) {
+        data.student = matchedStudentRecord.id;
+        strapi.log.debug(`[create exam-approval] Converted student documentId to id ${matchedStudentRecord.id}`);
       } else {
         strapi.log.warn(`[create exam-approval] Student not found by documentId: ${data.student}`);
       }
@@ -62,9 +85,34 @@ export default factories.createCoreController('api::exam-approval.exam-approval'
       }
     }
 
-    if (!data.student || !data.exam) {
-      return ctx.badRequest('Student and Exam are required for approval');
+    const examRecord = await strapi.db.query('api::exam.exam').findOne({
+      where: { id: data.exam },
+      populate: ['course', 'batch']
+    });
+
+    if (!examRecord) {
+      return ctx.badRequest('Exam not found.');
     }
+
+    if (data.student && data.student !== studentRecord.id) {
+      return ctx.forbidden('You can only create exam approval requests for yourself.');
+    }
+
+    if (examRecord.course?.id !== studentRecord.course?.id) {
+      return ctx.forbidden('This exam is not available for your enrolled course.');
+    }
+
+    if (examRecord.batch?.id && studentRecord.batch?.id && examRecord.batch.id !== studentRecord.batch.id) {
+      return ctx.forbidden('This exam is not available for your batch.');
+    }
+
+    if (!['upcoming', 'conducted'].includes(examRecord.status || 'upcoming')) {
+      return ctx.forbidden('Exam approval requests are not open for this exam.');
+    }
+
+    data.student = studentRecord.id;
+    data.course = studentRecord.course?.id || data.course;
+    data.batch = studentRecord.batch?.id || data.batch;
 
     // Check for duplicate request
     const existing = await strapi.db.query('api::exam-approval.exam-approval').findOne({
@@ -83,10 +131,35 @@ export default factories.createCoreController('api::exam-approval.exam-approval'
   },
 
   async update(ctx) {
+    const { user } = ctx.state;
+    if (!user) return ctx.unauthorized('You must be logged in');
+
+    const fullUser = await getUserWithBranch(user.id);
+    if (!fullUser) return ctx.unauthorized('User not found');
+
+    if (fullUser.roleType === 'student') {
+      return ctx.forbidden('Students cannot update exam approval requests.');
+    }
+
+    const hasPermission = await checkUserPermission(strapi, user.id, 'api::exam-approval.exam-approval', 'update');
+    if (!hasPermission && fullUser.roleType !== 'institute_admin') {
+      return ctx.forbidden('You do not have permission to update exam approval requests.');
+    }
+
     return await super.update(ctx);
   },
 
   async delete(ctx) {
+    const { user } = ctx.state;
+    if (!user) return ctx.unauthorized('You must be logged in');
+
+    const fullUser = await getUserWithBranch(user.id);
+    if (!fullUser) return ctx.unauthorized('User not found');
+
+    if (fullUser.roleType === 'student') {
+      return ctx.forbidden('Students cannot delete exam approval requests.');
+    }
+
     return await super.delete(ctx);
   },
 
@@ -101,7 +174,7 @@ export default factories.createCoreController('api::exam-approval.exam-approval'
     if (!fullUser) return ctx.unauthorized('User not found');
 
     const roleType = fullUser.roleType;
-    const hasAccessToAll = await canAccessAllBranches(user.id);
+    const hasAccessToAll = await canViewAllBranchData(user.id);
 
     const populate = ['student', 'student.course', 'student.batch', 'exam', 'exam.course', 'approvedBy'];
     
@@ -148,7 +221,7 @@ export default factories.createCoreController('api::exam-approval.exam-approval'
     if (!fullUser) return ctx.unauthorized('User not found');
 
     const roleType = fullUser.roleType;
-    const hasAccessToAll = await canAccessAllBranches(user.id);
+    const hasAccessToAll = await canViewAllBranchData(user.id);
     strapi.log.info(`[getStudentRequests] User authenticated - roleType: ${roleType}`);
 
     const populate = ['student', 'student.course', 'student.batch', 'exam', 'exam.course', 'approvedBy'];

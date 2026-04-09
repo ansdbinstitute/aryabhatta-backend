@@ -14,6 +14,7 @@ const CONTENT_TYPE_MAP: Record<string, string> = {
   'api::result.result': 'results',
   'api::attendance.attendance': 'attendance',
   'api::exam.exam': 'exams',
+  'api::exam-approval.exam-approval': 'exams',
   'api::fee-structure.fee-structure': 'fee-structures',
   'api::notice.notice': 'notices',
   'api::material.material': 'materials',

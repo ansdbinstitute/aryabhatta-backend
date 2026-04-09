@@ -13,13 +13,6 @@ const checkUserPermission = async (strapi: any, userId: number, contentType: str
     return true;
   }
 
-  if (roleType === 'branch_admin') {
-    if (action === 'find' || action === 'findOne') {
-      return true;
-    }
-    return true;
-  }
-
   const permissionMatrix = await strapi.entityService.findMany('api::permission-matrix.permission-matrix', {
     filters: { user: userId }
   });
@@ -49,10 +42,6 @@ const canManageBranch = async (strapi: any, userId: number, branchId: number): P
 
   if (roleType === 'institute_admin') {
     return true;
-  }
-
-  if (roleType === 'branch_admin') {
-    return user.branch?.id === branchId;
   }
 
   return false;

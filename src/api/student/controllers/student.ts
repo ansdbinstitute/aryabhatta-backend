@@ -1,6 +1,6 @@
 import { factories } from '@strapi/strapi';
 import { checkUserPermission } from '../../../utils/permission-checker';
-import { canAccessAllBranches, getUserWithBranch } from '../../../utils/branch-access';
+import { canAccessAllBranches, canViewAllBranchData, getUserWithBranch } from '../../../utils/branch-access';
 
 export default factories.createCoreController('api::student.student', ({ strapi }) => ({
   async find(ctx) {
@@ -13,12 +13,16 @@ export default factories.createCoreController('api::student.student', ({ strapi 
 
     const roleType = fullUser.roleType;
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
+    const hasAccessToAllData = await canViewAllBranchData(user.id);
+    if (hasAccessToAllData) {
       return await super.find(ctx);
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::student.student', 'find');
+      if (!hasPermission) {
+        return ctx.forbidden('You do not have permission to view students.');
+      }
       const branchId = fullUser.branch?.id;
       if (!branchId) {
         return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
@@ -35,10 +39,6 @@ export default factories.createCoreController('api::student.student', ({ strapi 
     if (roleType === 'teacher') {
       // canAccessAllBranches already checked above for teachers
       // If teacher is from main branch OR has canViewAllBranches permission, see all students
-      if (hasAccessToAll) {
-        return await super.find(ctx);
-      }
-      
       // Otherwise, see all students in their own branch
       const branchId = fullUser.branch?.id;
       if (branchId) {
@@ -97,12 +97,16 @@ export default factories.createCoreController('api::student.student', ({ strapi 
 
     const roleType = fullUser.roleType;
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
+    const hasAccessToAllData = await canViewAllBranchData(user.id);
+    if (hasAccessToAllData) {
       return await super.findOne(ctx);
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::student.student', 'findOne');
+      if (!hasPermission) {
+        return ctx.forbidden('You do not have permission to view this student.');
+      }
       const branchId = fullUser.branch?.id;
       const student: any = await strapi.entityService.findOne('api::student.student', id, {
         populate: ['branch']
@@ -142,6 +146,10 @@ export default factories.createCoreController('api::student.student', ({ strapi 
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::student.student', 'create');
+      if (!hasPermission) {
+        return ctx.forbidden('You do not have permission to create students.');
+      }
       const branchId = fullUser.branch?.id;
       if (branchId) {
         ctx.request.body.data.branch = branchId;
@@ -176,6 +184,10 @@ export default factories.createCoreController('api::student.student', ({ strapi 
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::student.student', 'update');
+      if (!hasPermission) {
+        return ctx.forbidden('You do not have permission to update students.');
+      }
       const branchId = fullUser.branch?.id;
       const student: any = await strapi.entityService.findOne('api::student.student', id, {
         populate: ['branch']
@@ -327,6 +339,10 @@ export default factories.createCoreController('api::student.student', ({ strapi 
     }
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::student.student', 'delete');
+      if (!hasPermission) {
+        return ctx.forbidden('You do not have permission to delete students.');
+      }
       const branchId = fullUser.branch?.id;
       const student: any = await strapi.entityService.findOne('api::student.student', id, {
         populate: ['branch']

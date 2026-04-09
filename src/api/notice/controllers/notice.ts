@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi';
 import { canAccessAllBranches, getUserWithBranch } from '../../../utils/branch-access';
+import { checkUserPermission } from '../../../utils/permission-checker';
 
 export default factories.createCoreController('api::notice.notice', ({ strapi }) => ({
   async find(ctx) {
@@ -29,11 +30,6 @@ export default factories.createCoreController('api::notice.notice', ({ strapi })
       return await super.find(ctx);
     }
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
-      return await super.find(ctx);
-    }
-
     return await super.find(ctx);
   },
 
@@ -50,11 +46,6 @@ export default factories.createCoreController('api::notice.notice', ({ strapi })
       }
 
       return this.transformResponse(notice);
-    }
-
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
-      return await super.findOne(ctx);
     }
 
     return await super.findOne(ctx);
@@ -75,7 +66,9 @@ export default factories.createCoreController('api::notice.notice', ({ strapi })
 
     const roleType = fullUser.roleType;
 
-    if (roleType === 'branch_admin' || roleType === 'teacher') {
+    if (roleType === 'branch_admin' || roleType === 'teacher' || roleType === 'accountant') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::notice.notice', 'create');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to create notices.');
       return await super.create(ctx);
     }
 
@@ -97,7 +90,9 @@ export default factories.createCoreController('api::notice.notice', ({ strapi })
 
     const roleType = fullUser.roleType;
 
-    if (roleType === 'branch_admin' || roleType === 'teacher') {
+    if (roleType === 'branch_admin' || roleType === 'teacher' || roleType === 'accountant') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::notice.notice', 'update');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to update notices.');
       return await super.update(ctx);
     }
 
@@ -119,7 +114,9 @@ export default factories.createCoreController('api::notice.notice', ({ strapi })
 
     const roleType = fullUser.roleType;
 
-    if (roleType === 'branch_admin' || roleType === 'teacher') {
+    if (roleType === 'branch_admin' || roleType === 'teacher' || roleType === 'accountant') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::notice.notice', 'delete');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to delete notices.');
       return await super.delete(ctx);
     }
 

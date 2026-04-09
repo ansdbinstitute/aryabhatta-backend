@@ -1,5 +1,5 @@
 import { checkUserPermission } from '../../../utils/permission-checker';
-import { canAccessAllBranches } from '../../../utils/branch-access';
+import { canViewAllBranchData } from '../../../utils/branch-access';
 
 export default (config, { strapi }) => {
   return async (ctx, next) => {
@@ -29,7 +29,7 @@ export default (config, { strapi }) => {
 
     const roleType = fullUser.roleType;
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
+    const hasAccessToAll = await canViewAllBranchData(user.id);
     if (hasAccessToAll) {
       return await next();
     }

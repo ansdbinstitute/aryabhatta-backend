@@ -178,6 +178,10 @@ async function grantPermissions(strapi: any) {
       'api::notice.notice.findOne',
       'api::course.course.find',
       'api::course.course.findOne',
+      'api::placement-partner.placement-partner.find',
+      'api::placement-partner.placement-partner.findOne',
+      'api::student-testimonial.student-testimonial.find',
+      'api::student-testimonial.student-testimonial.findOne',
     ];
 
     const permissionsToGrant = [

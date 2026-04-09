@@ -1,3 +1,5 @@
+import { isMainBranch } from '../../../utils/branch-access';
+
 export default {
   async find(ctx) {
     const user = ctx.state.user;
@@ -19,6 +21,7 @@ export default {
     const { page, pageSize, ...filters } = ctx.query;
     
     const users = await strapi.entityService.findMany('plugin::users-permissions.user', {
+      filters: { roleType: { $ne: 'student' } },
       populate: ['branch', 'role'],
       page: page || 1,
       pageSize: pageSize || 100,
@@ -52,16 +55,6 @@ export default {
 
     if (roleType === 'institute_admin') {
       return ctx.send({ data: targetUser });
-    }
-
-    if (roleType === 'branch_admin') {
-      if (targetUser.roleType === 'institute_admin') {
-        return ctx.forbidden('Access denied');
-      }
-      if (targetUser.branch?.id === fullUser.branch?.id) {
-        return ctx.send({ data: targetUser });
-      }
-      return ctx.forbidden('You can only view users in your branch');
     }
 
     return ctx.forbidden('Access denied');
@@ -376,6 +369,12 @@ export default {
       return ctx.unauthorized('You must be logged in');
     }
 
+    const fullUser: any = await strapi.entityService.findOne('plugin::users-permissions.user', user.id);
+
+    if (fullUser?.roleType !== 'institute_admin') {
+      return ctx.forbidden('Only Institute Admin can view role types');
+    }
+
     const roleTypes = [
       { value: 'branch_admin', label: 'Branch Admin' },
       { value: 'teacher', label: 'Teacher' },
@@ -420,8 +419,12 @@ export default {
       return ctx.notFound('User not found');
     }
 
-    if (targetUser.roleType !== 'institute_admin') {
-      return ctx.badRequest('Branch access permission can only be granted to Institute Admin users.');
+    if (targetUser.roleType !== 'teacher') {
+      return ctx.badRequest('Cross-branch visibility can only be granted to teacher users.');
+    }
+
+    if (!isMainBranch(targetUser.branch)) {
+      return ctx.badRequest('Cross-branch visibility can only be granted to teachers under the main branch.');
     }
 
     const updatedUser = await strapi.entityService.update('plugin::users-permissions.user', userId, {
@@ -432,7 +435,7 @@ export default {
 
     return ctx.send({ 
       data: safeUser,
-      message: `Branch access updated successfully. User can now ${canViewAllBranches ? 'view all branches' : 'view only their branch'}.`
+      message: `Teacher visibility updated successfully. User can now ${canViewAllBranches ? 'view all branches' : 'view only their own branch'}.`
     });
   },
 
@@ -455,7 +458,7 @@ export default {
 
     const usersWithAccess = await strapi.entityService.findMany('plugin::users-permissions.user', {
       filters: { 
-        roleType: 'institute_admin',
+        roleType: 'teacher',
         canViewAllBranches: true
       },
       populate: ['branch']

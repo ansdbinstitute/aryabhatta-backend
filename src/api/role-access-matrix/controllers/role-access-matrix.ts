@@ -8,8 +8,8 @@ export default {
 
     const fullUser: any = await strapi.entityService.findOne('plugin::users-permissions.user', user.id);
 
-    if (!fullUser?.roleType) {
-      return ctx.forbidden('Access denied');
+    if (fullUser?.roleType !== 'institute_admin') {
+      return ctx.forbidden('Only Institute Admin can view the access matrix');
     }
     
     const uid = 'api::role-access-matrix.role-access-matrix' as any;
@@ -34,8 +34,8 @@ export default {
 
     const fullUser: any = await strapi.entityService.findOne('plugin::users-permissions.user', user.id);
 
-    if (!fullUser?.roleType) {
-      return ctx.forbidden('Access denied');
+    if (fullUser?.roleType !== 'institute_admin') {
+      return ctx.forbidden('Only Institute Admin can view the access matrix');
     }
     
     const uid = 'api::role-access-matrix.role-access-matrix' as any;
@@ -131,9 +131,6 @@ function getDefaultPermissions() {
       'fee-structures': ['read'],
       payments: ['read'],
       notices: ['read'],
-      staff: ['read'],
-      users: ['read'],
-      'campus-network': ['read'],
       settings: ['read'],
       dashboard: ['read'],
     },

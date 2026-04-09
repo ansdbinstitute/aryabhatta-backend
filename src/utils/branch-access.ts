@@ -44,24 +44,38 @@ export function isMainBranch(branch: { name?: string; address?: string } | null 
 
 export async function canAccessAllBranches(userId: number): Promise<boolean> {
   const user = await getUserWithBranch(userId);
-  
+
   if (!user) {
     strapi.log.warn(`User not found: ${userId}`);
     return false;
   }
-  
-  // Allow institute_admin or teacher with main branch access or permission flag
-  // branch_admin NEVER gets cross-branch access
-  const canHaveCrossBranchAccess = user.roleType === 'institute_admin' || user.roleType === 'teacher';
-  
-  if (!canHaveCrossBranchAccess) {
+
+  // Full system-level access belongs only to institute admins.
+  return user.roleType === 'institute_admin';
+}
+
+export async function canViewAllBranchData(userId: number): Promise<boolean> {
+  const user = await getUserWithBranch(userId);
+
+  if (!user) {
+    strapi.log.warn(`User not found: ${userId}`);
     return false;
   }
-  
+
+  if (user.roleType === 'institute_admin') {
+    return true;
+  }
+
+  // Only main-branch teachers explicitly approved by institute admin
+  // can see data across all branches. Visibility does not imply admin power.
+  if (user.roleType !== 'teacher') {
+    return false;
+  }
+
   const userIsFromMainBranch = isMainBranch(user.branch);
   const hasPermissionFlag = user.canViewAllBranches === true;
-  
-  return userIsFromMainBranch || hasPermissionFlag;
+
+  return userIsFromMainBranch && hasPermissionFlag;
 }
 
 export async function getUserBranchId(userId: number): Promise<number | null> {

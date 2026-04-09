@@ -440,6 +440,11 @@ export interface ApiAttendanceAttendance extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     batch: Schema.Attribute.Relation<'manyToOne', 'api::batch.batch'>;
     createdAt: Schema.Attribute.DateTime;
@@ -479,6 +484,11 @@ export interface ApiBatchBatch extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     capacity: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<30>;
     course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
@@ -516,6 +526,11 @@ export interface ApiBranchBranch extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     address: Schema.Attribute.Text & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
@@ -551,6 +566,11 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
   };
   attributes: {
     batches: Schema.Attribute.Relation<'oneToMany', 'api::batch.batch'>;
@@ -593,6 +613,11 @@ export interface ApiExamApprovalExamApproval
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     approvedBy: Schema.Attribute.Relation<'manyToOne', 'api::staff.staff'>;
     batch: Schema.Attribute.Relation<'manyToOne', 'api::batch.batch'>;
@@ -632,6 +657,11 @@ export interface ApiExamExam extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     batch: Schema.Attribute.Relation<'manyToOne', 'api::batch.batch'>;
     course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
@@ -670,6 +700,11 @@ export interface ApiFeeStructureFeeStructure
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
     batch: Schema.Attribute.Relation<'manyToOne', 'api::batch.batch'>;
@@ -706,6 +741,11 @@ export interface ApiInstituteSettingInstituteSetting
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
   };
   attributes: {
     address: Schema.Attribute.Text;
@@ -747,6 +787,11 @@ export interface ApiMaterialMaterial extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     batch: Schema.Attribute.Relation<'manyToOne', 'api::batch.batch'>;
     course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
@@ -785,6 +830,11 @@ export interface ApiNoticeNotice extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     attachments: Schema.Attribute.Media<'files' | 'images' | 'videos', true>;
     content: Schema.Attribute.RichText & Schema.Attribute.Required;
@@ -819,6 +869,11 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
   };
   attributes: {
     amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
@@ -871,6 +926,11 @@ export interface ApiPermissionMatrixPermissionMatrix
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     allowedActions: Schema.Attribute.JSON & Schema.Attribute.Required;
     allowedContentTypes: Schema.Attribute.JSON & Schema.Attribute.Required;
@@ -912,6 +972,11 @@ export interface ApiPlacementPartnerPlacementPartner
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     companyName: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -952,6 +1017,11 @@ export interface ApiResultResult extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -986,6 +1056,11 @@ export interface ApiRoleAccessMatrixRoleAccessMatrix
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     accountant: Schema.Attribute.JSON;
     branch_admin: Schema.Attribute.JSON;
@@ -1018,6 +1093,11 @@ export interface ApiStaffStaff extends Struct.CollectionTypeSchema {
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
   };
   attributes: {
     aadharNumber: Schema.Attribute.String;
@@ -1074,6 +1154,11 @@ export interface ApiStudentTestimonialStudentTestimonial
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
+  };
   attributes: {
     batch: Schema.Attribute.Relation<'manyToOne', 'api::batch.batch'>;
     course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
@@ -1127,6 +1212,11 @@ export interface ApiStudentStudent extends Struct.CollectionTypeSchema {
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: true;
+    };
   };
   attributes: {
     aadharNumber: Schema.Attribute.String;
@@ -1193,6 +1283,11 @@ export interface ApiUserManagementUserManagement
   };
   options: {
     draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;

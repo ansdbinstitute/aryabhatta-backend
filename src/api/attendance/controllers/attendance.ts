@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi';
-import { canAccessAllBranches, getUserWithBranch } from '../../../utils/branch-access';
+import { canAccessAllBranches, canViewAllBranchData, getUserWithBranch } from '../../../utils/branch-access';
+import { checkUserPermission } from '../../../utils/permission-checker';
 
 export default factories.createCoreController('api::attendance.attendance', ({ strapi }) => ({
   async find(ctx) {
@@ -7,8 +8,8 @@ export default factories.createCoreController('api::attendance.attendance', ({ s
 
     if (!user) return await super.find(ctx);
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
+    const hasAccessToAllData = await canViewAllBranchData(user.id);
+    if (hasAccessToAllData) {
       return await super.find(ctx);
     }
 
@@ -18,6 +19,8 @@ export default factories.createCoreController('api::attendance.attendance', ({ s
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::attendance.attendance', 'find');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view attendance.');
       const branchId = fullUser.branch?.id;
       if (!branchId) {
         return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
@@ -36,6 +39,8 @@ export default factories.createCoreController('api::attendance.attendance', ({ s
     }
 
     if (roleType === 'teacher') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::attendance.attendance', 'find');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view attendance.');
       const teacherBatches = await strapi.entityService.findMany('api::batch.batch', {
         filters: { teacher: user.id }
       });
@@ -81,8 +86,8 @@ export default factories.createCoreController('api::attendance.attendance', ({ s
 
     if (!user) return await super.findOne(ctx);
 
-    const hasAccessToAll = await canAccessAllBranches(user.id);
-    if (hasAccessToAll) {
+    const hasAccessToAllData = await canViewAllBranchData(user.id);
+    if (hasAccessToAllData) {
       return await super.findOne(ctx);
     }
 
@@ -92,6 +97,8 @@ export default factories.createCoreController('api::attendance.attendance', ({ s
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::attendance.attendance', 'findOne');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view this attendance.');
       const branchId = fullUser.branch?.id;
       const attendance: any = await strapi.entityService.findOne('api::attendance.attendance', id, {
         populate: {
@@ -132,6 +139,8 @@ export default factories.createCoreController('api::attendance.attendance', ({ s
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin' || roleType === 'teacher') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::attendance.attendance', 'create');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to create attendance.');
       return await super.create(ctx);
     }
 
@@ -155,6 +164,8 @@ export default factories.createCoreController('api::attendance.attendance', ({ s
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::attendance.attendance', 'update');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to update attendance.');
       const branchId = fullUser.branch?.id;
       const attendance: any = await strapi.entityService.findOne('api::attendance.attendance', id, {
         populate: {
@@ -177,6 +188,8 @@ export default factories.createCoreController('api::attendance.attendance', ({ s
     }
 
     if (roleType === 'teacher') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::attendance.attendance', 'update');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to update attendance.');
       return await super.update(ctx);
     }
 
@@ -200,6 +213,8 @@ export default factories.createCoreController('api::attendance.attendance', ({ s
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::attendance.attendance', 'delete');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to delete attendance.');
       const branchId = fullUser.branch?.id;
       const attendance: any = await strapi.entityService.findOne('api::attendance.attendance', id, {
         populate: {

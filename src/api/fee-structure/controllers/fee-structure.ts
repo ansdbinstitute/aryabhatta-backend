@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi';
 import { canAccessAllBranches, getUserWithBranch } from '../../../utils/branch-access';
+import { checkUserPermission } from '../../../utils/permission-checker';
 
 export default factories.createCoreController('api::fee-structure.fee-structure', ({ strapi }) => ({
   async find(ctx) {
@@ -18,6 +19,8 @@ export default factories.createCoreController('api::fee-structure.fee-structure'
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::fee-structure.fee-structure', 'find');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view fee structures.');
       const branchId = fullUser.branch?.id;
       if (!branchId) {
         return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
@@ -55,6 +58,8 @@ export default factories.createCoreController('api::fee-structure.fee-structure'
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::fee-structure.fee-structure', 'findOne');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view this fee structure.');
       const branchId = fullUser.branch?.id;
       const feeStructure: any = await strapi.entityService.findOne('api::fee-structure.fee-structure', id, {
         populate: {
@@ -95,6 +100,8 @@ export default factories.createCoreController('api::fee-structure.fee-structure'
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::fee-structure.fee-structure', 'create');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to create fee structures.');
       return await super.create(ctx);
     }
 
@@ -118,6 +125,8 @@ export default factories.createCoreController('api::fee-structure.fee-structure'
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::fee-structure.fee-structure', 'update');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to update fee structures.');
       const branchId = fullUser.branch?.id;
       const feeStructure: any = await strapi.entityService.findOne('api::fee-structure.fee-structure', id, {
         populate: {
@@ -159,6 +168,8 @@ export default factories.createCoreController('api::fee-structure.fee-structure'
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::fee-structure.fee-structure', 'delete');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to delete fee structures.');
       const branchId = fullUser.branch?.id;
       const feeStructure: any = await strapi.entityService.findOne('api::fee-structure.fee-structure', id, {
         populate: {
