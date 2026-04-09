@@ -17,6 +17,10 @@ const config: Core.Config.Middlewares = [
         'http://127.0.0.1:3000',
         'http://ansdb.org:5173',
         'http://ansdb.org',
+        'https://ansdb.org',
+        'https://ims.ansdb.org',
+        'https://student.ansdb.org',
+        'https://app.ansdb.org',
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
 
