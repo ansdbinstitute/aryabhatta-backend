@@ -301,7 +301,12 @@ async function grantPermissions(strapi: any) {
       'api::student-testimonial.student-testimonial.findOne',
       'api::student-testimonial.student-testimonial.create',
       'api::student-testimonial.student-testimonial.update',
-      'api::student-testimonial.student-testimonial.delete'
+      'api::student-testimonial.student-testimonial.delete',
+
+      // Media Library (Upload Plugin)
+      'plugin::upload.content-api.upload',
+      'plugin::upload.content-api.destroy',
+      'plugin::upload.content-api.find'
     ];
 
     for (const role of roles) {
