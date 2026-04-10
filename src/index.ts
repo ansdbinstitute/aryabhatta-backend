@@ -306,7 +306,11 @@ async function grantPermissions(strapi: any) {
       // Media Library (Upload Plugin)
       'plugin::upload.content-api.upload',
       'plugin::upload.content-api.destroy',
-      'plugin::upload.content-api.find'
+      'plugin::upload.content-api.find',
+
+      // Core Users (for Teacher listing etc.)
+      'plugin::users-permissions.user.find',
+      'plugin::users-permissions.user.findOne'
     ];
 
     for (const role of roles) {
