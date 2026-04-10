@@ -310,7 +310,11 @@ async function grantPermissions(strapi: any) {
 
       // Core Users (for Teacher listing etc.)
       'plugin::users-permissions.user.find',
-      'plugin::users-permissions.user.findOne'
+      'plugin::users-permissions.user.findOne',
+
+      // Exams
+      'api::exam.exam.find',
+      'api::exam.exam.findOne'
     ];
 
     for (const role of roles) {

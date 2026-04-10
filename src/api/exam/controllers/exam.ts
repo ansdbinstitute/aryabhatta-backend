@@ -59,6 +59,32 @@ export default factories.createCoreController('api::exam.exam', ({ strapi }) => 
       return await super.find(ctx);
     }
 
+    if (roleType === 'student') {
+      const studentProfile: any = await strapi.entityService.findMany('api::student.student', {
+        filters: { user: user.id },
+        populate: ['course', 'batch']
+      });
+
+      if (!studentProfile.length) {
+        return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
+      }
+
+      const { course, batch } = studentProfile[0];
+      
+      // Students see exams for their course
+      // If an exam is batch-specific, it must match their batch
+      ctx.query.filters = {
+        ...(ctx.query.filters as any),
+        course: course?.id,
+        $or: [
+          { batch: { $null: true } },
+          { batch: batch?.id }
+        ]
+      };
+
+      return await super.find(ctx);
+    }
+
     return ctx.forbidden('You do not have permission to view exams.');
   },
 
@@ -97,6 +123,35 @@ export default factories.createCoreController('api::exam.exam', ({ strapi }) => 
       const examBranchId = exam.batch?.students?.branch?.id;
       if (examBranchId !== branchId) {
         return ctx.forbidden('Exam belongs to a different branch.');
+      }
+
+      return await super.findOne(ctx);
+    }
+
+    if (roleType === 'student') {
+      const exam: any = await strapi.entityService.findOne('api::exam.exam', id, {
+        populate: ['course', 'batch']
+      });
+
+      if (!exam) return ctx.notFound();
+
+      const studentProfile: any = await strapi.entityService.findMany('api::student.student', {
+        filters: { user: user.id },
+        populate: ['course', 'batch']
+      });
+
+      if (!studentProfile.length) return ctx.forbidden();
+
+      const { course, batch } = studentProfile[0];
+
+      // Check if exam belongs to student's course
+      if (exam.course?.id !== course?.id) {
+        return ctx.forbidden('Exam belongs to a different course.');
+      }
+
+      // If exam is batch-specific, check if it matches student's batch
+      if (exam.batch && exam.batch.id !== batch?.id) {
+        return ctx.forbidden('Exam belongs to a different batch.');
       }
 
       return await super.findOne(ctx);
