@@ -95,8 +95,7 @@ export default {
   },
 
   async beforeDelete(event) {
-    const { params } = event.params;
-    const { where } = params;
+    const { where } = event.params;
 
     try {
       // Fetch student with user relation

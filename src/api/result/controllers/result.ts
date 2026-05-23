@@ -39,20 +39,15 @@ export default factories.createCoreController('api::result.result', ({ strapi })
     if (roleType === 'teacher') {
       const hasPermission = await checkUserPermission(strapi, user.id, 'api::result.result', 'find');
       if (!hasPermission) return ctx.forbidden('You do not have permission to view results.');
-      const teacherBatches = await strapi.entityService.findMany('api::batch.batch', {
-        filters: { teacher: user.id }
-      });
-
-      const batchIds = teacherBatches.map((b: any) => b.id);
-
-      if (batchIds.length === 0) {
+      const branchId = fullUser.branch?.id;
+      if (!branchId) {
         return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
       }
 
       ctx.query.filters = {
         ...(ctx.query.filters as any),
-        exam: {
-          batch: { $in: batchIds }
+        student: {
+          branch: branchId
         } as any,
       };
 
@@ -113,6 +108,47 @@ export default factories.createCoreController('api::result.result', ({ strapi })
       const resultBranchId = result.student?.branch?.id;
       if (resultBranchId !== branchId) {
         return ctx.forbidden('Result belongs to a different branch.');
+      }
+
+      return await super.findOne(ctx);
+    }
+
+    if (roleType === 'teacher') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::result.result', 'findOne');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to view this result.');
+      const branchId = fullUser.branch?.id;
+      const result: any = await strapi.entityService.findOne('api::result.result', id, {
+        populate: {
+          student: {
+            branch: true
+          }
+        } as any,
+      });
+
+      if (!result) return ctx.notFound();
+
+      const resultBranchId = result.student?.branch?.id;
+      if (branchId && resultBranchId !== branchId) {
+        return ctx.forbidden('Result belongs to a different branch.');
+      }
+
+      return await super.findOne(ctx);
+    }
+
+    if (roleType === 'student') {
+      const studentProfile = await strapi.entityService.findMany('api::student.student', {
+        filters: { user: user.id },
+        fields: ['id']
+      });
+
+      if (!studentProfile.length) return ctx.notFound();
+
+      const result: any = await strapi.entityService.findOne('api::result.result', id, {
+        populate: ['student']
+      });
+
+      if (!result || result.student?.id !== studentProfile[0].id) {
+        return ctx.forbidden('You can only view your own results.');
       }
 
       return await super.findOne(ctx);
@@ -186,6 +222,22 @@ export default factories.createCoreController('api::result.result', ({ strapi })
     if (roleType === 'teacher') {
       const hasPermission = await checkUserPermission(strapi, user.id, 'api::result.result', 'update');
       if (!hasPermission) return ctx.forbidden('You do not have permission to update results.');
+      const branchId = fullUser.branch?.id;
+      const result: any = await strapi.entityService.findOne('api::result.result', id, {
+        populate: {
+          student: {
+            branch: true
+          }
+        } as any,
+      });
+
+      if (!result) return ctx.notFound();
+
+      const resultBranchId = result.student?.branch?.id;
+      if (resultBranchId !== branchId) {
+        return ctx.forbidden('You can only update results in your own branch.');
+      }
+
       return await super.update(ctx);
     }
 
@@ -209,6 +261,28 @@ export default factories.createCoreController('api::result.result', ({ strapi })
     const roleType = fullUser.roleType;
 
     if (roleType === 'branch_admin') {
+      const hasPermission = await checkUserPermission(strapi, user.id, 'api::result.result', 'delete');
+      if (!hasPermission) return ctx.forbidden('You do not have permission to delete results.');
+      const branchId = fullUser.branch?.id;
+      const result: any = await strapi.entityService.findOne('api::result.result', id, {
+        populate: {
+          student: {
+            branch: true
+          }
+        } as any,
+      });
+
+      if (!result) return ctx.notFound();
+
+      const resultBranchId = result.student?.branch?.id;
+      if (resultBranchId !== branchId) {
+        return ctx.forbidden('You can only delete results in your own branch.');
+      }
+
+      return await super.delete(ctx);
+    }
+
+    if (roleType === 'teacher') {
       const hasPermission = await checkUserPermission(strapi, user.id, 'api::result.result', 'delete');
       if (!hasPermission) return ctx.forbidden('You do not have permission to delete results.');
       const branchId = fullUser.branch?.id;

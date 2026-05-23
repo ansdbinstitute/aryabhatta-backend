@@ -30,7 +30,7 @@ export default factories.createCoreController('api::student.student', ({ strapi 
 
       ctx.query.filters = {
         ...(ctx.query.filters as any),
-        branch: branchId
+        branch: { id: branchId }
       };
 
       return await super.find(ctx);
@@ -44,7 +44,7 @@ export default factories.createCoreController('api::student.student', ({ strapi 
       if (branchId) {
         ctx.query.filters = {
           ...(ctx.query.filters as any),
-          branch: branchId
+          branch: { id: branchId }
         };
       }
       return await super.find(ctx);
@@ -57,7 +57,7 @@ export default factories.createCoreController('api::student.student', ({ strapi 
       if (branchId) {
         ctx.query.filters = {
           ...(ctx.query.filters as any),
-          branch: branchId
+          branch: { id: branchId }
         };
       }
       return await super.find(ctx);
@@ -134,6 +134,18 @@ export default factories.createCoreController('api::student.student', ({ strapi 
     const user = ctx.state.user;
 
     if (!user) return await super.create(ctx);
+    
+    // AUTO-ASSIGN BRANCH HOOK
+    if (!ctx.request.body.data) ctx.request.body.data = {};
+    const hookFullUser = await getUserWithBranch(user.id);
+    if (hookFullUser) {
+        if (hookFullUser.roleType === 'teacher' && hookFullUser.branch) {
+            ctx.request.body.data.branch = hookFullUser.branch.id;
+        } else if (hookFullUser.roleType === 'institute_admin' && !ctx.request.body.data.branch) {
+            ctx.request.body.data.branch = 1; // Default to Main Branch
+        }
+    }
+
 
     const fullUser = await getUserWithBranch(user.id);
     if (!fullUser) return await super.create(ctx);

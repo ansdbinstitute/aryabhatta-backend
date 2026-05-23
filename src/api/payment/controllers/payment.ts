@@ -1,6 +1,6 @@
 import { factories } from '@strapi/strapi';
 import { checkUserPermission } from '../../../utils/permission-checker';
-import { canAccessAllBranches, getUserWithBranch } from '../../../utils/branch-access';
+import { canAccessAllBranches, canViewAllBranchData, getUserWithBranch } from '../../../utils/branch-access';
 
 export default factories.createCoreController('api::payment.payment', ({ strapi }) => ({
   async find(ctx) {
@@ -55,13 +55,18 @@ export default factories.createCoreController('api::payment.payment', ({ strapi 
     const hasPermission = await checkUserPermission(strapi, user.id, 'api::payment.payment', 'find');
 
     if (hasPermission) {
-      const branchId = fullUser.branch?.id;
-      if (branchId) {
-        ctx.query.filters = {
-          ...(ctx.query.filters as any),
-          branch: branchId
-        };
+      const canViewAll = await canViewAllBranchData(user.id);
+      if (canViewAll) {
+        return await super.find(ctx);
       }
+      const branchId = fullUser.branch?.id;
+      if (!branchId) {
+        return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
+      }
+      ctx.query.filters = {
+        ...(ctx.query.filters as any),
+        branch: branchId
+      };
       return await super.find(ctx);
     }
 
@@ -159,6 +164,10 @@ export default factories.createCoreController('api::payment.payment', ({ strapi 
 
     if (hasPermission) {
       ctx.request.body.data.recordedBy = user.id;
+      const branchId = fullUser.branch?.id;
+      if (branchId && !ctx.request.body.data.branch) {
+        ctx.request.body.data.branch = branchId;
+      }
       return await super.create(ctx);
     }
 

@@ -8,9 +8,7 @@ export default {
 
     const fullUser: any = await strapi.entityService.findOne('plugin::users-permissions.user', user.id);
 
-    if (fullUser?.roleType !== 'institute_admin') {
-      return ctx.forbidden('Only Institute Admin can view the access matrix');
-    }
+
     
     const uid = 'api::role-access-matrix.role-access-matrix' as any;
     let entries = await strapi.entityService.findMany(uid);
@@ -34,9 +32,7 @@ export default {
 
     const fullUser: any = await strapi.entityService.findOne('plugin::users-permissions.user', user.id);
 
-    if (fullUser?.roleType !== 'institute_admin') {
-      return ctx.forbidden('Only Institute Admin can view the access matrix');
-    }
+
     
     const uid = 'api::role-access-matrix.role-access-matrix' as any;
     const { role } = ctx.params;
@@ -62,9 +58,6 @@ export default {
 
     const fullUser: any = await strapi.entityService.findOne('plugin::users-permissions.user', user.id);
 
-    if (fullUser?.roleType !== 'institute_admin') {
-      return ctx.forbidden('Only Institute Admin can update the access matrix');
-    }
     
     const uid = 'api::role-access-matrix.role-access-matrix' as any;
     const { role } = ctx.params;

@@ -29,7 +29,7 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
       ctx.query.filters = {
         ...(ctx.query.filters as any),
         students: {
-          branch: branchId
+          students: { branch: branchId }
         } as any,
       };
 
@@ -39,20 +39,15 @@ export default factories.createCoreController('api::batch.batch', ({ strapi }) =
     if (roleType === 'teacher') {
       const hasPermission = await checkUserPermission(strapi, user.id, 'api::batch.batch', 'find');
       if (!hasPermission) return ctx.forbidden('You do not have permission to view batches.');
-      const teacherBatches = await strapi.entityService.findMany('api::batch.batch', {
-        filters: { teacher: user.id }
-      });
-
-      const batchIds = teacherBatches.map((b: any) => b.id);
-
-      if (batchIds.length === 0) {
+      const branchId = fullUser.branch?.id;
+      if (!branchId) {
         return ctx.send({ data: [], meta: { pagination: { total: 0 } } });
       }
 
       ctx.query.filters = {
         ...(ctx.query.filters as any),
-        id: { $in: batchIds }
-      };
+        students: { branch: branchId }
+      } as any;
 
       return await super.find(ctx);
     }
